@@ -1,46 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import { Header, Image, Segment, Grid, Form, Button, Divider, Container } from 'semantic-ui-react';
+import { Header, Image } from 'semantic-ui-react';
 import universidad from './assets/universidad.png';
-import upc from './assets/upc.png';
+import MainPage from './Contenedores/MainPage';
+import Estudiantes from './Contenedores/Estudiantes/Estudiantes';
+import Logged from './Contenedores/Profesores/Logged';
 
 function App() {
+
+  const [logueado, setLogueado] = useState(false);
+  const [rol, setRol] = useState('');
+
+  const inicioEstudiante = () => {
+    setLogueado(true);
+    setRol('estudiante');
+  }
+
+  const inicioProfesor = () => {
+    setLogueado(true);
+    setRol('profesor');
+  }
+
+  const cierreSesion = () => {
+    setLogueado(false);
+    setRol('');
+  }
+
   return (
     <div >
       <Header as='h3' block inverted >
         <Image src={universidad} size='massive'/>
         Universidad Piloto de Colombia- Prácticas profesionales
       </Header>
-      <Container>
-        <Segment placeholder>
-          <Grid columns={2} relaxed='very' stackable>
-            <Grid.Column >
-              <Image src={upc} size='medium' centered/>
-            </Grid.Column>
-
-            <Grid.Column verticalAlign='middle'>
-              <Form>
-                <Form.Input
-                  icon='user'
-                  iconPosition='left'
-                  label='Usuario'
-                  placeholder='Usuario'
-                />
-                <Form.Input
-                  icon='lock'
-                  iconPosition='left'
-                  label='Contraseña'
-                  type='Contraseña'
-                />
-
-                <Button primary>Iniciar sesión</Button>
-              </Form>
-            </Grid.Column>
-          </Grid>
-
-          <Divider vertical />
-        </Segment>
-      </Container>
+      {
+        logueado === false ?
+        <MainPage funcionEst={inicioEstudiante} funcionProf={inicioProfesor}></MainPage>
+        :
+        (rol === 'estudiante'?
+        <Estudiantes funcionCierre={cierreSesion}></Estudiantes>
+        :
+        <Logged funcionCierre={cierreSesion}></Logged>)
+      }
     </div>
   );
 }
