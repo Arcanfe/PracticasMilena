@@ -1,7 +1,34 @@
 import React, { useState } from 'react';
 import { Container, Segment, Grid, Button, Input, Radio } from 'semantic-ui-react';
+import axios from 'axios';
 
 const Registrar: React.FC<{}> = () => {
+
+    const [conocimiento, setConocimiento] = useState('');
+    const [area, setArea] = useState('');
+
+    const actualizarConocimiento = (e:any) => {
+        setConocimiento(e.target.value);
+    }
+
+    const actualizarArea = (e:any) => {
+        setArea(e.target.value);
+    }
+
+    const agregarConocimiento = () => {
+        axios.post('https://localhost:8003/skill/registro', JSON.parse('{"tipo_id":"' + conocimiento + '", "tipo_id":' + 2 + '}'))
+        
+        .catch(error =>{
+            console.log(error);
+        });
+    }
+
+    const agregarArea = () => {
+        axios.post('https://localhost:8003/skill/registro', JSON.parse('{"tipo_id":"' + conocimiento + '", "tipo_id":' + 1 + '}'))
+        .catch(error =>{
+            console.log(error);
+        });
+    }
 
     return (
         <div>
@@ -42,12 +69,12 @@ const Registrar: React.FC<{}> = () => {
                         <Grid.Row>
                             <Grid.Column>
                                 <Container textAlign='center'>
-                                    <Input placeholder='Conocimiento'/>
+                                    <Input placeholder='Conocimiento' onChange={actualizarConocimiento}/>
                                 </Container>
                             </Grid.Column>
                             <Grid.Column>
                                 <Container textAlign='center'>
-                                    <Button>Agregar</Button>   
+                                    <Button onClick={agregarConocimiento}>Agregar</Button>   
                                 </Container>                        
                             </Grid.Column>
                         </Grid.Row>

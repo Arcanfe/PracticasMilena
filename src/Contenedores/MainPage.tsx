@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Image, Segment, Grid, Form, Button, Divider, Container } from 'semantic-ui-react';
 import upc from '../assets/upc.png';
+import axios from 'axios';
 
 type formProps = {
     funcionEst: any,
@@ -11,17 +12,34 @@ const MainPage: React.FC<formProps> = (props: formProps) => {
    
     const [usuario, setUsuario] = useState('');
     const [password, setPassword] = useState('');
+    const [habilitado, setHabilitado] = useState(true);
 
     const actualizarUsuario = (e: any) => {
         setUsuario(e.target.value);
+        if(usuario !== '' && password !== ''){
+            setHabilitado(false);
+        }
     }
 
     const actualizarPassword = (e: any) => {
         setPassword(e.target.value);
+        if(usuario !== '' && password !== ''){
+            setHabilitado(false);
+        }
     }
 
     const login = () => {
-        props.funcionProf();
+        axios.post('http://localhost:8003/usuario/login?nick=' + usuario + '&password=' + password, '')
+        .then(result => {
+            if(result.data.rol_id === 1){
+                props.funcionEst(result.data.nombre);
+            }
+            else{
+                props.funcionProf(result.data.nombre);
+            }
+        }).catch(error => {
+            console.log(error);
+        }); 
     }
 
     return (
@@ -46,7 +64,7 @@ const MainPage: React.FC<formProps> = (props: formProps) => {
                         <label>Contraseña</label>
                         <input placeholder='Contraseña' onChange={actualizarPassword}/>
                     </Form.Field>
-                    <Button primary onClick={login}>Iniciar sesión</Button>
+                    <Button onClick={login} disabled={habilitado}>Iniciar sesión</Button>
                 </Form>
                 </Grid.Column>
             </Grid>
